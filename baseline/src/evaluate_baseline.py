@@ -46,6 +46,8 @@ def main():
     print(f"Test rows: {len(test):,}")
     all_results = {}
 
+    RESULTS.mkdir(exist_ok=True)
+
     for input_name in ("input_a", "input_b"):
         model_path = MODELS / f"tfidf_logreg_{input_name}.joblib"
 
@@ -56,15 +58,24 @@ def main():
         X_test = test[input_name].fillna("").astype(str)
 
         print(f"Evaluating {input_name}...")
+
         predictions = model.predict(X_test)
+        probabilities = model.predict_proba(X_test)[:, 1]
+
         metrics = evaluate(y_test, predictions)
         all_results[input_name] = metrics
 
-        print(json.dumps(
-            {input_name: metrics}, indent=2
-        ))
+        prediction_path = RESULTS / f"pred_test_{input_name}.csv"
+        pd.DataFrame({
+            "id": test["id"],
+            "label": y_test,
+            "prediction": predictions,
+            "p_deny": probabilities,
+        }).to_csv(prediction_path, index=False)
 
-    RESULTS.mkdir(exist_ok=True)
+        print(json.dumps({input_name: metrics}, indent=2))
+        print(f"Predictions saved to: {prediction_path}")
+
     output_path = RESULTS / "test_baselines.json"
     output_path.write_text(
         json.dumps(
