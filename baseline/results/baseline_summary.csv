@@ -1,0 +1,9 @@
+split,dataset,input,accuracy,deny_precision,deny_recall,deny_f1
+Validation,validation,input_a,90.62%,90.92%,90.06%,90.49%
+Validation,validation,input_b,94.13%,94.24%,93.90%,94.07%
+Test,test,input_a,90.69%,90.72%,90.48%,90.60%
+Test,test,input_b,94.10%,94.10%,94.00%,94.05%
+OOD,ood_approve_or_deny,input_a,86.33%,83.09%,89.37%,86.12%
+OOD,ood_saroku,input_a,62.52%,67.24%,61.97%,64.50%
+OOD,ood_approve_or_deny,input_b,87.57%,86.47%,87.48%,86.98%
+OOD,ood_saroku,input_b,65.09%,63.60%,85.23%,72.84%

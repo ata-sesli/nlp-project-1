@@ -1,0 +1,25 @@
+{
+  "input": "input_a",
+  "train_rows": 335349,
+  "validation_rows": 71626,
+  "label_mapping": {
+    "0": "allow",
+    "1": "deny"
+  },
+  "metrics": {
+    "accuracy": 0.9062072431798509,
+    "deny_precision": 0.9091814379605656,
+    "deny_recall": 0.9006228685775486,
+    "deny_f1": 0.9048819165203602,
+    "confusion_matrix": [
+      [
+        32953,
+        3192
+      ],
+      [
+        3526,
+        31955
+      ]
+    ]
+  }
+}
