@@ -1,0 +1,80 @@
+{
+  "label_mapping": {
+    "0": "allow",
+    "1": "deny"
+  },
+  "results": {
+    "input_a": {
+      "ood_approve_or_deny.csv.gz": {
+        "rows": 1448,
+        "accuracy": 0.8632596685082873,
+        "deny_precision": 0.8308525033829499,
+        "deny_recall": 0.893740902474527,
+        "deny_f1": 0.8611500701262272,
+        "confusion_matrix": [
+          [
+            636,
+            125
+          ],
+          [
+            73,
+            614
+          ]
+        ]
+      },
+      "ood_saroku.csv.gz": {
+        "rows": 26633,
+        "accuracy": 0.625164269890737,
+        "deny_precision": 0.6723511529621117,
+        "deny_recall": 0.6197375615090214,
+        "deny_f1": 0.6449731498275187,
+        "confusion_matrix": [
+          [
+            7582,
+            4419
+          ],
+          [
+            5564,
+            9068
+          ]
+        ]
+      }
+    },
+    "input_b": {
+      "ood_approve_or_deny.csv.gz": {
+        "rows": 1448,
+        "accuracy": 0.8756906077348067,
+        "deny_precision": 0.8647482014388489,
+        "deny_recall": 0.8748180494905385,
+        "deny_f1": 0.869753979739508,
+        "confusion_matrix": [
+          [
+            667,
+            94
+          ],
+          [
+            86,
+            601
+          ]
+        ]
+      },
+      "ood_saroku.csv.gz": {
+        "rows": 26633,
+        "accuracy": 0.6508842413547103,
+        "deny_precision": 0.636015911872705,
+        "deny_recall": 0.8523100054674686,
+        "deny_f1": 0.728446261682243,
+        "confusion_matrix": [
+          [
+            4864,
+            7137
+          ],
+          [
+            2161,
+            12471
+          ]
+        ]
+      }
+    }
+  }
+}
