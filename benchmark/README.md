@@ -22,6 +22,7 @@ The sample is the same rows for every model, so the models stay comparable.
 | `common.py` | The model list, data loading, the predictions format and the latency measurement. |
 | `score_baseline.py` | Scores the TF-IDF + Logistic Regression models (A and B). |
 | `score_distilbert.py` | Scores the fine-tuned DistilBERT models (A and B) from the Hugging Face Hub. |
+| `score_julia.py` | Scores [Julia 1](https://huggingface.co/SupersonicLabs/Julia-1), a general decision model, zero-shot (A and B). It is our "new method": it is asked a yes/no question and is not trained on our data. |
 | `run_benchmark.py` | Builds `results/benchmark.csv`, `benchmark_by_group.csv`, `benchmark.md` and the charts. |
 | `requirements.txt` | Packages the scripts need. |
 
@@ -37,6 +38,10 @@ python baseline/src/baseline.py --input input_b   # which are not in the repo
 python benchmark/score_baseline.py --limit 1000
 
 python benchmark/score_distilbert.py --limit 1000  # drop --limit from both for every row (GPU recommended)
+
+python -c "from huggingface_hub import snapshot_download; snapshot_download('SupersonicLabs/Julia-1', local_dir='Julia-1')"
+pip install -e ./Julia-1                           # about 550 MB; needs Python 3.11+
+python benchmark/score_julia.py --model-dir Julia-1 --limit 1000
 
 python benchmark/run_benchmark.py
 ```

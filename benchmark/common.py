@@ -26,6 +26,8 @@ MODELS = {
     "tfidf_logreg_b": ("TF-IDF + Logistic Regression", "word 1-2 grams, 100k features", "input_b", "baseline"),
     "distilbert_a": ("DistilBERT", "distilbert-base-uncased, fine-tuned", "input_a", "baseline"),
     "distilbert_b": ("DistilBERT", "distilbert-base-uncased, fine-tuned", "input_b", "baseline"),
+    "julia_a": ("Julia (zero-shot)", "SupersonicLabs/Julia-1, not fine-tuned", "input_a", "new method"),
+    "julia_b": ("Julia (zero-shot)", "SupersonicLabs/Julia-1, not fine-tuned", "input_b", "new method"),
 }
 
 
