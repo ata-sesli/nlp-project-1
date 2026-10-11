@@ -1,0 +1,58 @@
+{
+  "settings": {
+    "data_dir": "/content/LucidAI-Dataset/data",
+    "input": "a",
+    "model": "distilbert-base-uncased",
+    "out": "/content/drive/MyDrive/mayi_distilbert/distilbert_a_full",
+    "train_rows": 0,
+    "val_rows": 5000,
+    "max_len": 128,
+    "batch_size": 64,
+    "epochs": 1.0,
+    "lr": 3e-05,
+    "eval_every": 1000,
+    "predict": "val,test,ood_approve_or_deny,ood_saroku",
+    "seed": 42,
+    "smoke": false
+  },
+  "device": "cuda",
+  "gpu": "NVIDIA A100-SXM4-40GB",
+  "train_rows": 335349,
+  "train_seconds": 192.5,
+  "val_sample_metrics": {
+    "eval_loss": 0.21663755178451538,
+    "eval_accuracy": 0.9158168366326734,
+    "eval_macro_f1": 0.9158038958165383,
+    "eval_false_allow_rate": 0.08800968914008882,
+    "eval_runtime": 1.1194,
+    "eval_samples_per_second": 4467.726,
+    "eval_steps_per_second": 35.735,
+    "epoch": 1.0
+  },
+  "predictions": {
+    "val": {
+      "rows": 71626,
+      "seconds": 14.8,
+      "rows_per_second": 4836.4,
+      "accuracy_at_0.5": 0.9141
+    },
+    "test": {
+      "rows": 71613,
+      "seconds": 15.0,
+      "rows_per_second": 4781.5,
+      "accuracy_at_0.5": 0.9142
+    },
+    "ood_approve_or_deny": {
+      "rows": 1448,
+      "seconds": 0.3,
+      "rows_per_second": 4771.6,
+      "accuracy_at_0.5": 0.8764
+    },
+    "ood_saroku": {
+      "rows": 26633,
+      "seconds": 4.8,
+      "rows_per_second": 5495.1,
+      "accuracy_at_0.5": 0.6648
+    }
+  }
+}
