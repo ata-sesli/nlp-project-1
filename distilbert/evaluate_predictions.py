@@ -2,7 +2,7 @@
 
 Works for any model that writes the same columns, so the whole team can use one scorer:
     python evaluate_predictions.py --pred runs/distilbert_b/predictions/test.csv \
-        --data-dir LucidAI-Dataset/data --split test --out results/distilbert_b_test
+        --data-dir ../dataset/data --split test --out results/distilbert_b_test
 
 Writes metrics.json, metrics.md, confusion_matrix.png and errors.csv (most confident mistakes,
 with category and rationale for error analysis) to --out.
@@ -47,7 +47,7 @@ def auroc(y, p):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--pred", required=True)
-    ap.add_argument("--data-dir", default="LucidAI-Dataset/data")
+    ap.add_argument("--data-dir", default="../dataset/data")
     ap.add_argument("--split", required=True, help="val, test, ood_approve_or_deny or ood_saroku")
     ap.add_argument("--out", required=True)
     ap.add_argument("--threshold", type=float, default=0.5, help="deny when p_deny >= threshold")

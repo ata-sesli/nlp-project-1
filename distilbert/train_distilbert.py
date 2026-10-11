@@ -1,8 +1,8 @@
 """Fine-tune DistilBERT to decide whether an agent tool call should be allowed (0) or denied (1).
 
 Example (Colab, A100):
-    python train_distilbert.py --data-dir LucidAI-Dataset/data --input a --out runs/distilbert_a
-    python train_distilbert.py --data-dir LucidAI-Dataset/data --input b --out runs/distilbert_b
+    python train_distilbert.py --data-dir ../dataset/data --input a --out runs/distilbert_a
+    python train_distilbert.py --data-dir ../dataset/data --input b --out runs/distilbert_b
 
 Outputs in --out:
     model/                  fine-tuned weights + tokenizer (load with AutoModelForSequenceClassification)
@@ -34,7 +34,7 @@ META = ["id", "label", "length_bucket", "difficulty"]
 
 def parse_args():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--data-dir", default="LucidAI-Dataset/data")
+    p.add_argument("--data-dir", default="../dataset/data")
     p.add_argument("--input", choices=["a", "b"], required=True, help="a = tool call only, b = call + request + history")
     p.add_argument("--model", default="distilbert-base-uncased")
     p.add_argument("--out", required=True, help="output folder; put it on Google Drive to survive disconnects")

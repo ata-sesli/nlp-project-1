@@ -7,7 +7,7 @@ Fine-tunes `distilbert-base-uncased` to label an agent's proposed tool call **al
 - **B** (`input_b`): the tool call, the user's request and the agent's earlier steps.
 
 Comparing A and B measures how much the context helps. Both formats are used exactly as the
-[cleaned dataset](https://github.com/Enes-Ozbek/LucidAI-Dataset) provides them, and both models
+[cleaned dataset](../dataset) provides them, and both models
 are trained on the full training split (335,349 rows).
 
 Published models: [`akifkulll/mayi-distilbert-a`](https://huggingface.co/akifkulll/mayi-distilbert-a)
