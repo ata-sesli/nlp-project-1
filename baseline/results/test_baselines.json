@@ -1,0 +1,42 @@
+{
+  "dataset": "LucidAI-Dataset/test.csv.gz",
+  "test_rows": 71613,
+  "label_mapping": {
+    "0": "allow",
+    "1": "deny"
+  },
+  "results": {
+    "input_a": {
+      "accuracy": 0.9069023780598495,
+      "deny_precision": 0.9072400745467895,
+      "deny_recall": 0.9047619047619048,
+      "deny_f1": 0.9059992950299612,
+      "confusion_matrix": [
+        [
+          32817,
+          3285
+        ],
+        [
+          3382,
+          32129
+        ]
+      ]
+    },
+    "input_b": {
+      "accuracy": 0.9410023319788307,
+      "deny_precision": 0.9409708518915262,
+      "deny_recall": 0.9399904255019571,
+      "deny_f1": 0.940480383179545,
+      "confusion_matrix": [
+        [
+          34008,
+          2094
+        ],
+        [
+          2131,
+          33380
+        ]
+      ]
+    }
+  }
+}
