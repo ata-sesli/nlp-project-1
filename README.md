@@ -148,7 +148,7 @@ The trained models are on the Hugging Face Hub:
 | `score_distilbert.py` | Scores the DistilBERT models from the Hugging Face Hub. |
 | `score_julia.py` | Scores Julia 1 zero-shot: it is asked a yes/no question about each row. |
 | `run_benchmark.py` | Reads every model's predictions and writes the tables and charts in `results/`. |
-| `benchmark_colab.ipynb` | Runs the whole benchmark in Colab. |
+| `benchmark_colab.ipynb` | Runs the whole benchmark in Colab. Kept with the outputs of the full run. |
 | `requirements.txt` | Packages the scripts need. |
 | `results/` | The tables and charts of the full run. |
 

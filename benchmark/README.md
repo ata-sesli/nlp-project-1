@@ -20,7 +20,7 @@ on a CPU; the reported results use every row.
 
 | file | what it does |
 |---|---|
-| `benchmark_colab.ipynb` | Runs the whole benchmark in Colab and copies the results to Google Drive. |
+| `benchmark_colab.ipynb` | Runs the whole benchmark in Colab and copies the results to Google Drive. Kept with the outputs of the full run. |
 | `common.py` | The model list, data loading, the predictions format and the latency measurement. |
 | `score_baseline.py` | Scores the TF-IDF + Logistic Regression models (A and B). |
 | `score_bilstm.py` | Scores the BiLSTM models (A and B) from the model files in `bilstm/results/models/`. |
