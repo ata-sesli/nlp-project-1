@@ -5,3 +5,4 @@ LucidAI-Dataset/
 
 # Trained model artifacts are excluded until security review
 models/*.joblib
+results/pred_test_*.csv
