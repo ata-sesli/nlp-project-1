@@ -98,8 +98,9 @@ and in full in [`dataset/DETAILS.md`](dataset/DETAILS.md).
 | `data/REPORT.md`, `data/stats.json` | The row count after every cleaning step, and the label balance. |
 | `data/dropped.jsonl.gz` | Every removed example and the reason. |
 
-**Raw data.** The raw files are the three Hugging Face datasets listed under
-[Data sources](#data-sources); `prepare_dataset.py` downloads them unchanged before cleaning.
+**Raw data.** This repo holds the cleaned data, which is what every model uses. The raw data is
+not copied here (it is 1.16 GB): it is the three Hugging Face datasets listed under
+[Data sources](#data-sources), and `prepare_dataset.py` downloads them unchanged before cleaning.
 
 ### `baseline/`
 

@@ -47,12 +47,13 @@ Nothing else was removed. `data/REPORT.md` shows the count after every step, and
 | `data/ood_approve_or_deny.csv.gz` | 1,448 | outside test 1 |
 | `data/ood_saroku.csv.gz` | 26,633 | outside test 2 |
 | `external_tests/`, `validate_external_tests.py` | | our own test examples, and the script that checks them |
-| raw data (this repo's Releases page, tag `raw-data`) | 754,731 | the original files, exactly as downloaded, before any cleaning |
+| raw data (on Hugging Face, see [Sources](#sources)) | 754,731 | the original files, before any cleaning; `prepare_dataset.py` downloads them into `raw/` |
 | `mayi_colab.ipynb`, `prepare_dataset.py`, `mayi_input.py` | | the code that made the data |
 | [`DETAILS.md`](DETAILS.md) | | every detail of how the data was made |
 
-About half of the examples in every file are deny. The raw data is on the Releases page because it
-is 1.16 GB, and GitHub does not accept files over 100 MB inside a repo.
+About half of the examples in every file are deny. The raw data is not in the repo because it
+is 1.16 GB, and GitHub does not accept files over 100 MB inside a repo. Every model uses the
+cleaned files.
 
 ## Load the data
 

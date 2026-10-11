@@ -35,9 +35,9 @@ and the rationale explains the label. Use them only for error analysis. `difficu
 
 ## Raw data
 
-The original files, exactly as downloaded from Hugging Face, are on this repo's Releases page
-(tag `raw-data`). `prepare_dataset.py` downloads the same files from Hugging Face into `raw/`, so
-the release copy is there to check them by hand.
+The original files are not in this repo (1.16 GB); the models use the cleaned files in `data/`.
+`prepare_dataset.py` downloads the original files from Hugging Face into `raw/`, and the
+checksums below let you check them.
 
 | file | dataset | rows | bytes | SHA256 |
 |---|---|---:|---:|---|
