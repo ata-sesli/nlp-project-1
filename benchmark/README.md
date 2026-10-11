@@ -20,6 +20,7 @@ on a CPU; the reported results use every row.
 
 | file | what it does |
 |---|---|
+| `benchmark_colab.ipynb` | Runs the whole benchmark in Colab and copies the results to Google Drive. |
 | `common.py` | The model list, data loading, the predictions format and the latency measurement. |
 | `score_baseline.py` | Scores the TF-IDF + Logistic Regression models (A and B). |
 | `score_distilbert.py` | Scores the fine-tuned DistilBERT models (A and B) from the Hugging Face Hub. |
@@ -29,7 +30,9 @@ on a CPU; the reported results use every row.
 
 ## Run
 
-From the repo's root folder:
+In Colab: open [`benchmark_colab.ipynb`](https://colab.research.google.com/github/ata-sesli/nlp-project-1/blob/main/benchmark/benchmark_colab.ipynb), pick a GPU runtime and run all cells.
+
+Or by hand, from the repo's root folder:
 
 ```bash
 pip install -r benchmark/requirements.txt
