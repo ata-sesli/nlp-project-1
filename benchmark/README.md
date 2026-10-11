@@ -26,8 +26,27 @@ on a CPU; the reported results use every row.
 | `score_bilstm.py` | Scores the BiLSTM models (A and B) from the model files in `bilstm/results/models/`. |
 | `score_distilbert.py` | Scores the fine-tuned DistilBERT models (A and B) from the Hugging Face Hub. |
 | `score_julia.py` | Scores [Julia 1](https://huggingface.co/SupersonicLabs/Julia-1), a general decision model, zero-shot (A and B). It is our "new method": it is asked a yes/no question and is not trained on our data. |
-| `run_benchmark.py` | Builds `results/benchmark.csv`, `benchmark_by_group.csv`, `benchmark.md` and the charts. |
+| `run_benchmark.py` | Builds `results/benchmark.csv`, `benchmark_by_group.csv`, `benchmark.md` and the charts. With `--from-results` it redraws `benchmark.md` and the charts from the saved CSVs, without the predictions. |
 | `requirements.txt` | Packages the scripts need. |
+| `results/` | The results of the full run (every row, Colab A100; latency on the Colab CPU). |
+
+## Results
+
+`results/` holds the full run:
+
+| file | what it shows |
+|---|---|
+| `benchmark.md`, `benchmark.csv` | Every model on every split: macro-F1, accuracy, the two error rates, AUROC, the confusion counts and the latency. |
+| `benchmark_by_group.csv` | The test split by difficulty and by whether the same call appears with both labels. |
+| `f1_a_vs_b.png` | Macro-F1 on the test split, input A next to input B. |
+| `error_rates.png` | False allow rate next to false deny rate. They are shown together because a model that denies everything has a false allow rate of 0. |
+| `f1_vs_latency.png` | Macro-F1 against the CPU time per row. |
+| `f1_by_difficulty.png` | Macro-F1 on easy, medium and hard test rows, for the trained models. |
+| `confusion_matrices.png` | The confusion matrix of every model on the test split. |
+
+Julia, used zero-shot with our question, denies nearly every row (macro-F1 0.33, AUROC below
+0.5). It is left out of the difficulty chart: a model that always gives the same answer scores
+higher on a group only because the group has more deny rows.
 
 ## Run
 
@@ -61,6 +80,8 @@ Deny is the positive class and a row is denied when `p_deny >= 0.5`.
   macro-F1 weighs both classes equally.
 - **False allow rate** is the share of deny rows predicted allow. Letting a harmful call through
   costs more than blocking a safe one, so this error is reported on its own.
+- **False deny rate** is the share of allow rows predicted deny. It is read next to the false
+  allow rate: denying everything makes the false allow rate 0 and this rate 1.
 - **AUROC** shows how well the scores separate the classes before any threshold is chosen.
 - **Latency** is the time for one row on the CPU, one row per call, on 200 fixed test rows
   (median and 95th percentile).

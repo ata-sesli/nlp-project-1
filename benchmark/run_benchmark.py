@@ -9,6 +9,7 @@ benchmark/results/:
     *.png                    the charts
 
     python benchmark/run_benchmark.py
+    python benchmark/run_benchmark.py --from-results   # redraw benchmark.md and the charts from the saved CSVs
 
 Models with no predictions yet are skipped. Needs no model files and no GPU.
 """
@@ -37,6 +38,7 @@ DIFFICULTIES = ["easy", "medium", "hard"]
 SURFACE, INK, MUTED, GRID = "#fcfcfb", "#0b0b0b", "#898781", "#e6e5e0"
 INPUT_COLOR = {"A": "#2a78d6", "B": "#eb6834"}
 INPUT_LABEL = {"A": "A: tool call only", "B": "B: call + request + history"}
+ONE_CLASS = 0.99  # a model that gets this share of one class wrong gives nearly every row the same answer
 
 
 def collect(threshold):
@@ -85,10 +87,14 @@ def write_markdown(bench, groups, threshold):
         part = bench[bench["split"] == split]
         if len(part):
             lines += [f"## {split}", ""] + table(part, ["model", "input"]) + [""]
+    one = one_class(bench[bench["split"] == "test"])
     for g in GROUPS:
         part = groups[groups["group"] == g] if len(groups) else groups
         if len(part):
             lines += [f"## test, by {g}", ""] + table(part, ["model", "input", "value"]) + [""]
+            if one:
+                lines += [f"{', '.join(one)}: these give nearly every row the same answer, so their score "
+                          "in a group shows only how many deny rows the group has.", ""]
     with open(os.path.join(OUT, "benchmark.md"), "w") as f:
         f.write("\n".join(lines))
 
@@ -110,25 +116,54 @@ def save(fig, name):
     plt.close(fig)
 
 
-def chart_a_vs_b(test, key, title, name):
+def one_class(test):
+    """Models that give nearly every test row the same answer."""
+    part = test[test[["false_allow_rate", "false_deny_rate"]].max(axis=1) >= ONE_CLASS]
+    return list(part["model"])
+
+
+def bars_a_vs_b(ax, test, key, top):
     """One group of bars per architecture: input A next to input B."""
     archs = list(dict.fromkeys(test["architecture"]))
-    fig, ax = plt.subplots(figsize=(1.6 + 1.9 * len(archs), 4), facecolor=SURFACE)
     width = 0.36
-    top = 1.08 if key == "macro_f1" else max(test[key].max() * 1.25, 0.01)
     for i, inp in enumerate(["A", "B"]):
         part = test[test["input"] == inp].set_index("architecture")
         xs = [archs.index(a) + (i - 0.5) * (width + 0.03) for a in part.index]
         ax.bar(xs, part[key], width, color=INPUT_COLOR[inp], label=INPUT_LABEL[inp])
         for x, v in zip(xs, part[key]):
             ax.text(x, v + top * 0.012, f"{v:.3f}", ha="center", va="bottom", fontsize=9, color=INK)
-    ax.set_xticks(range(len(archs)), archs)
+    ax.set_xticks(range(len(archs)), [a.replace(" + ", " +\n") for a in archs])
     ax.tick_params(axis="x", labelcolor=INK)
     ax.set_ylim(0, top)
-    ax.set_title(title, loc="left", fontsize=11, color=INK, pad=28)
-    ax.legend(loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2, frameon=False, fontsize=9, labelcolor=INK)
     style(ax)
-    save(fig, name)
+    return len(archs)
+
+
+def chart_f1(test):
+    archs = test["architecture"].nunique()
+    fig, ax = plt.subplots(figsize=(1.6 + 1.9 * archs, 4), facecolor=SURFACE)
+    bars_a_vs_b(ax, test, "macro_f1", 1.08)
+    ax.set_title("Macro-F1 on the test split", loc="left", fontsize=11, color=INK, pad=28)
+    ax.legend(loc="lower left", bbox_to_anchor=(0, 1.0), ncol=2, frameon=False, fontsize=9, labelcolor=INK)
+    save(fig, "f1_a_vs_b.png")
+
+
+def chart_error_rates(test):
+    """The two kinds of error side by side, so a model that denies everything cannot look safe."""
+    archs = test["architecture"].nunique()
+    panels = [("false_allow_rate", "False allow rate: harmful calls let through"),
+              ("false_deny_rate", "False deny rate: safe calls blocked")]
+    fig, axes = plt.subplots(1, 2, figsize=(2 * (1.2 + 1.7 * archs), 4.2), facecolor=SURFACE)
+    for ax, (key, title) in zip(axes, panels):
+        bars_a_vs_b(ax, test, key, max(test[key].max() * 1.15, 0.01))
+        ax.set_title(title, loc="left", fontsize=10, color=INK)
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.suptitle("Error rates on the test split (lower is better)", x=0.01, y=1.0, ha="left", fontsize=11,
+                 color=INK)
+    fig.legend(handles, labels, loc="upper left", bbox_to_anchor=(0.005, 0.95), ncol=2, frameon=False,
+               fontsize=9, labelcolor=INK)
+    fig.tight_layout(rect=(0, 0, 1, 0.88))
+    save(fig, "error_rates.png")
 
 
 def chart_latency(test):
@@ -136,15 +171,19 @@ def chart_latency(test):
     part = test.dropna(subset=["latency_ms_p50"])
     if part.empty:
         return
-    fig, ax = plt.subplots(figsize=(7, 4.2), facecolor=SURFACE)
+    fig, ax = plt.subplots(figsize=(7.5, 4.6), facecolor=SURFACE)
     for inp in ["A", "B"]:
         sub = part[part["input"] == inp]
         ax.scatter(sub["latency_ms_p50"], sub["macro_f1"], s=70, color=INPUT_COLOR[inp], edgecolor=SURFACE,
                    linewidth=2, label=INPUT_LABEL[inp], zorder=3)
+    # the two inputs of one model sit close together: A is labelled below its point, B above
     for _, r in part.iterrows():
-        ax.annotate(r["architecture"], (r["latency_ms_p50"], r["macro_f1"]), xytext=(8, 6),
-                    textcoords="offset points", fontsize=9, color=INK)
+        below = r["input"] == "A"
+        ax.annotate(r["architecture"].replace(" + ", " +\n"), (r["latency_ms_p50"], r["macro_f1"]),
+                    xytext=(0, -8 if below else 8), textcoords="offset points", ha="center",
+                    va="top" if below else "bottom", fontsize=8.5, color=INK, linespacing=1.1)
     ax.set_xscale("log")
+    ax.margins(x=0.14, y=0.2)
     ax.set_xlabel("CPU time per row, median, ms (log scale)", color=MUTED, fontsize=9)
     ax.set_ylabel("macro-F1 on the test split", color=MUTED, fontsize=9)
     ax.set_title("Accuracy against speed", loc="left", fontsize=11, color=INK, pad=28)
@@ -153,14 +192,19 @@ def chart_latency(test):
     save(fig, "f1_vs_latency.png")
 
 
-def chart_difficulty(groups):
-    """One small panel per model: macro-F1 on easy, medium and hard test rows."""
+def chart_difficulty(groups, skip):
+    """One small panel per model: macro-F1 on easy, medium and hard test rows.
+
+    Models in skip (they give nearly every row the same answer) are left out and named in a note.
+    """
     part = groups[groups["group"] == "difficulty"] if len(groups) else groups
     part = part[part["value"].isin(DIFFICULTIES)] if len(part) else part
+    skipped = list(dict.fromkeys(part[part["model"].isin(skip)]["architecture"])) if len(part) else []
+    part = part[~part["model"].isin(skip)] if len(part) else part
     names = list(dict.fromkeys(part["model"])) if len(part) else []
     if not names:
         return
-    fig, axes = plt.subplots(1, len(names), figsize=(2.6 * len(names), 3.6), sharey=True, facecolor=SURFACE,
+    fig, axes = plt.subplots(1, len(names), figsize=(2.6 * len(names), 3.8), sharey=True, facecolor=SURFACE,
                              squeeze=False)
     for ax, name in zip(axes[0], names):
         sub = part[part["model"] == name].set_index("value").reindex(DIFFICULTIES)
@@ -173,8 +217,11 @@ def chart_difficulty(groups):
         ax.set_ylim(0, 1.08)
         ax.tick_params(axis="x", labelcolor=INK)
         style(ax)
-    fig.suptitle("Macro-F1 on the test split, by difficulty", x=0.02, ha="left", fontsize=11, color=INK)
-    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    fig.suptitle("Macro-F1 on the test split, by difficulty", x=0.01, y=0.98, ha="left", fontsize=11, color=INK)
+    if skipped:
+        fig.text(0.01, 0.01, f"{', '.join(skipped)} is left out: it denies nearly every row, so its score in "
+                 "a group shows only how many deny rows the group has.", fontsize=8.5, color=MUTED)
+    fig.tight_layout(rect=(0, 0.05 if skipped else 0, 1, 0.95))
     save(fig, "f1_by_difficulty.png")
 
 
@@ -210,25 +257,30 @@ def chart_confusion(test):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--threshold", type=float, default=0.5, help="deny when p_deny >= threshold")
+    ap.add_argument("--from-results", action="store_true",
+                    help="skip scoring: redraw benchmark.md and the charts from the CSVs in results/")
     a = ap.parse_args()
-    if not os.path.isdir(PRED):
-        sys.exit(f"no predictions in {PRED}: run the score_*.py scripts first")
     os.makedirs(OUT, exist_ok=True)
 
-    bench, groups = collect(a.threshold)
-    if bench.empty:
-        sys.exit(f"no predictions in {PRED}: run the score_*.py scripts first")
-    bench.to_csv(os.path.join(OUT, "benchmark.csv"), index=False)
-    groups.to_csv(os.path.join(OUT, "benchmark_by_group.csv"), index=False)
+    if a.from_results:
+        bench = pd.read_csv(os.path.join(OUT, "benchmark.csv"))
+        groups = pd.read_csv(os.path.join(OUT, "benchmark_by_group.csv"), dtype={"value": str})
+    else:
+        if not os.path.isdir(PRED):
+            sys.exit(f"no predictions in {PRED}: run the score_*.py scripts first")
+        bench, groups = collect(a.threshold)
+        if bench.empty:
+            sys.exit(f"no predictions in {PRED}: run the score_*.py scripts first")
+        bench.to_csv(os.path.join(OUT, "benchmark.csv"), index=False)
+        groups.to_csv(os.path.join(OUT, "benchmark_by_group.csv"), index=False)
     write_markdown(bench, groups, a.threshold)
 
     test = bench[bench["split"] == "test"]
     if len(test):
-        chart_a_vs_b(test, "macro_f1", "Macro-F1 on the test split", "f1_a_vs_b.png")
-        chart_a_vs_b(test, "false_allow_rate", "False allow rate on the test split (harmful calls let through)",
-                     "false_allow_rate.png")
+        chart_f1(test)
+        chart_error_rates(test)
         chart_latency(test)
-        chart_difficulty(groups)
+        chart_difficulty(groups, one_class(test))
         chart_confusion(test)
     print(bench[["model", "split"] + KEYS].to_string(index=False))
     print(f"-> {OUT}")
