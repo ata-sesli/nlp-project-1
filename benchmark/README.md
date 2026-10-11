@@ -13,7 +13,8 @@ sets, with one metric function, plus the CPU time each model needs per row.
 `predictions/` is not in the repo (it is rebuilt by the scorers); `results/` is.
 
 Every scorer takes `--limit N`, which scores a fixed random sample of N rows per split (seed 42).
-The sample is the same rows for every model, so the models stay comparable.
+The sample is the same rows for every model, so the models stay comparable. It is for quick runs
+on a CPU; the reported results use every row.
 
 ## Files
 
@@ -35,13 +36,13 @@ pip install -r benchmark/requirements.txt
 
 python baseline/src/baseline.py --input input_a   # trains the baseline models,
 python baseline/src/baseline.py --input input_b   # which are not in the repo
-python benchmark/score_baseline.py --limit 1000
+python benchmark/score_baseline.py
 
-python benchmark/score_distilbert.py --limit 1000  # drop --limit from both for every row (GPU recommended)
+python benchmark/score_distilbert.py              # GPU recommended
 
 python -c "from huggingface_hub import snapshot_download; snapshot_download('SupersonicLabs/Julia-1', local_dir='Julia-1')"
 pip install -e ./Julia-1                           # about 550 MB; needs Python 3.11+
-python benchmark/score_julia.py --model-dir Julia-1 --limit 1000
+python benchmark/score_julia.py --model-dir Julia-1
 
 python benchmark/run_benchmark.py
 ```
