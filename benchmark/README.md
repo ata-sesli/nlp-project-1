@@ -23,6 +23,7 @@ on a CPU; the reported results use every row.
 | `benchmark_colab.ipynb` | Runs the whole benchmark in Colab and copies the results to Google Drive. |
 | `common.py` | The model list, data loading, the predictions format and the latency measurement. |
 | `score_baseline.py` | Scores the TF-IDF + Logistic Regression models (A and B). |
+| `score_bilstm.py` | Scores the BiLSTM models (A and B) from the model files in `bilstm/results/models/`. |
 | `score_distilbert.py` | Scores the fine-tuned DistilBERT models (A and B) from the Hugging Face Hub. |
 | `score_julia.py` | Scores [Julia 1](https://huggingface.co/SupersonicLabs/Julia-1), a general decision model, zero-shot (A and B). It is our "new method": it is asked a yes/no question and is not trained on our data. |
 | `run_benchmark.py` | Builds `results/benchmark.csv`, `benchmark_by_group.csv`, `benchmark.md` and the charts. |
@@ -40,6 +41,8 @@ pip install -r benchmark/requirements.txt
 python baseline/src/baseline.py --input input_a   # trains the baseline models,
 python baseline/src/baseline.py --input input_b   # which are not in the repo
 python benchmark/score_baseline.py
+
+python benchmark/score_bilstm.py
 
 python benchmark/score_distilbert.py              # GPU recommended
 

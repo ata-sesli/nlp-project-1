@@ -24,6 +24,8 @@ SPLITS = ["test", "ood_approve_or_deny", "ood_saroku"]
 MODELS = {
     "tfidf_logreg_a": ("TF-IDF + Logistic Regression", "word 1-2 grams, 100k features", "input_a", "baseline"),
     "tfidf_logreg_b": ("TF-IDF + Logistic Regression", "word 1-2 grams, 100k features", "input_b", "baseline"),
+    "bilstm_a": ("BiLSTM", "GloVe 100d + 2-layer BiLSTM, 128 hidden units", "input_a", "baseline"),
+    "bilstm_b": ("BiLSTM", "GloVe 100d + 2-layer BiLSTM, 128 hidden units", "input_b", "baseline"),
     "distilbert_a": ("DistilBERT", "distilbert-base-uncased, fine-tuned", "input_a", "baseline"),
     "distilbert_b": ("DistilBERT", "distilbert-base-uncased, fine-tuned", "input_b", "baseline"),
     "julia_a": ("Julia (zero-shot)", "SupersonicLabs/Julia-1, not fine-tuned", "input_a", "new method"),
