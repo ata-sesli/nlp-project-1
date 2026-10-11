@@ -3,8 +3,6 @@ import csv
 import json
 from pathlib import Path
 
-from sklearn.metrics import f1_score
-
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results"
 
@@ -32,12 +30,6 @@ def percent(value):
 def add_row(rows, split, dataset, input_name, metrics):
     tn, fp = metrics["confusion_matrix"][0]
     fn, tp = metrics["confusion_matrix"][1]
-
-    macro_f1 = f1_score(
-        [0, 1],
-        [0, 1],
-        average="macro",
-    )
 
     # Calculate macro-F1 from the confusion matrix.
     f1_allow = tn / (tn + (fp + fn) / 2) if (tn + (fp + fn) / 2) else 0
