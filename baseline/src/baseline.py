@@ -1,4 +1,4 @@
-"""TF-IDF + Logistic Regression baseline for LucidAI-Dataset."""
+"""TF-IDF + Logistic Regression baseline for the dataset in dataset/data."""
 
 import argparse
 import json
@@ -22,7 +22,7 @@ from sklearn.pipeline import Pipeline
 
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "LucidAI-Dataset" / "data"
+DATA = ROOT.parent / "dataset" / "data"
 MODELS = ROOT / "models"
 RESULTS = ROOT / "results"
 

@@ -15,7 +15,7 @@ from sklearn.metrics import (
 )
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "LucidAI-Dataset" / "data"
+DATA = ROOT.parent / "dataset" / "data"
 MODELS = ROOT / "models"
 RESULTS = ROOT / "results"
 

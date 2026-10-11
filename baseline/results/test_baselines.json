@@ -1,5 +1,5 @@
 {
-  "dataset": "LucidAI-Dataset/test.csv.gz",
+  "dataset": "dataset/data/test.csv.gz",
   "test_rows": 71613,
   "label_mapping": {
     "0": "allow",

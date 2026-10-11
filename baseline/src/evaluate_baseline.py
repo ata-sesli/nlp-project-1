@@ -15,7 +15,7 @@ from sklearn.metrics import (
 )
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA = ROOT / "LucidAI-Dataset" / "data"
+DATA = ROOT.parent / "dataset" / "data"
 MODELS = ROOT / "models"
 RESULTS = ROOT / "results"
 
@@ -69,7 +69,7 @@ def main():
     output_path.write_text(
         json.dumps(
             {
-                "dataset": "LucidAI-Dataset/test.csv.gz",
+                "dataset": "dataset/data/test.csv.gz",
                 "test_rows": len(test),
                 "label_mapping": {"0": "allow", "1": "deny"},
                 "results": all_results,

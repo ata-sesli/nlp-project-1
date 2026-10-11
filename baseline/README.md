@@ -38,18 +38,12 @@ See results/baseline_summary.csv and the JSON files in results/.
 
 ## Scope
 
-This repository contains the baseline and analysis component,
+This folder contains the baseline and analysis component,
 not the complete MayI project.
 
 ## Dataset setup
 
-The dataset is maintained separately:
-https://github.com/Enes-Ozbek/LucidAI-Dataset
-
-After cloning this repository, download the dataset into the expected directory:
-
-    git clone https://github.com/Enes-Ozbek/LucidAI-Dataset.git LucidAI-Dataset
-
-The evaluation scripts expect the test and OOD CSV files under
-`LucidAI-Dataset/data/`. See the dataset repository for its data preparation
-details and licensing information.
+The dataset is in this repository, under `dataset/`. The scripts read the
+train, validation, test and OOD CSV files from `dataset/data/`, so no separate
+download is needed. See `dataset/README.md` for its data preparation details
+and licensing information.
